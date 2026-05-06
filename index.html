@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>שלמה זלמן לרנר — פתרונות טכנולוגיים</title>
+    <meta name="description" content="מפתח פתרונות טכנולוגיים מותאמים אישית — מערכות CRM, שוברים, ניהול צי ועוד.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg:           #07071100;
+            --bg-solid:     #070711;
+            --accent:       #6c63ff;
+            --accent2:      #a855f7;
+            --accent3:      #ec4899;
+            --text:         #e8e8f0;
+            --text-muted:   #8888aa;
+            --card-bg:      rgba(255,255,255,0.04);
+            --card-border:  rgba(255,255,255,0.08);
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Heebo', sans-serif;
+            background: var(--bg-solid);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* ambient blobs */
+        .blob {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .blob-1 {
+            width: 700px; height: 700px;
+            top: -250px; right: -250px;
+            background: radial-gradient(circle, rgba(108,99,255,0.14) 0%, transparent 65%);
+        }
+        .blob-2 {
+            width: 600px; height: 600px;
+            bottom: -200px; left: -200px;
+            background: radial-gradient(circle, rgba(168,85,247,0.1) 0%, transparent 65%);
+        }
+        .blob-3 {
+            width: 400px; height: 400px;
+            top: 40%; left: 35%;
+            background: radial-gradient(circle, rgba(236,72,153,0.06) 0%, transparent 65%);
+        }
+
+        /* NAV */
+        nav {
+            position: fixed;
+            top: 0; width: 100%;
+            z-index: 100;
+            padding: 18px 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            background: rgba(7,7,17,0.75);
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .nav-logo {
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 36px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.25s;
+        }
+        .nav-links a:hover { color: var(--text); }
+
+        /* LAYOUT */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 0 48px;
+        }
+
+        section { padding: 120px 0; }
+
+        /* HERO */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding-top: 140px;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 18px;
+            border-radius: 100px;
+            border: 1px solid rgba(108,99,255,0.35);
+            background: rgba(108,99,255,0.08);
+            color: #b0a8ff;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 32px;
+            width: fit-content;
+        }
+
+        .hero-badge-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 8px var(--accent);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(0.85); }
+        }
+
+        .hero h1 {
+            font-size: clamp(2.6rem, 5.5vw, 5.2rem);
+            font-weight: 900;
+            line-height: 1.1;
+            letter-spacing: -1.5px;
+            margin-bottom: 12px;
+        }
+
+        .hero h1 .name { color: var(--text); }
+
+        .hero h1 .role {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 50%, var(--accent3) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-desc {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            max-width: 560px;
+            margin: 24px 0 48px;
+            font-weight: 300;
+            line-height: 1.85;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-wa {
+            background: linear-gradient(135deg, #25d366, #20b858);
+            color: white;
+            box-shadow: 0 4px 20px rgba(37,211,102,0.28);
+        }
+        .btn-wa:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(37,211,102,0.42);
+        }
+
+        .btn-outline {
+            border: 1px solid var(--card-border);
+            background: var(--card-bg);
+            color: var(--text);
+            backdrop-filter: blur(10px);
+        }
+        .btn-outline:hover {
+            transform: translateY(-2px);
+            border-color: rgba(108,99,255,0.4);
+        }
+
+        .scroll-cue {
+            position: absolute;
+            bottom: 44px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-muted);
+            font-size: 0.72rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .scroll-line {
+            width: 1px; height: 44px;
+            background: linear-gradient(to bottom, rgba(108,99,255,0.7), transparent);
+            animation: scrollLine 2s ease-in-out infinite;
+        }
+        @keyframes scrollLine {
+            0%, 100% { opacity: 0.3; transform: scaleY(0.6); }
+            50% { opacity: 1; transform: scaleY(1); }
+        }
+
+        /* DIVIDER */
+        .section-divider {
+            position: relative;
+            z-index: 1;
+            height: 1px;
+            max-width: 1120px;
+            margin: 0 auto;
+            background: linear-gradient(to left, transparent, var(--card-border), transparent);
+        }
+
+        /* SECTION HEADER */
+        .sec-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 14px;
+        }
+
+        .sec-title {
+            font-size: clamp(1.8rem, 3vw, 2.75rem);
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 18px;
+        }
+
+        .sec-desc {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            max-width: 540px;
+            line-height: 1.85;
+            margin-bottom: 60px;
+            font-weight: 300;
+        }
+
+        /* ABOUT GRID */
+        .about-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .about-card {
+            padding: 30px;
+            border-radius: 18px;
+            border: 1px solid var(--card-border);
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            transition: border-color 0.3s, transform 0.3s;
+        }
+        .about-card:hover {
+            border-color: rgba(108,99,255,0.3);
+            transform: translateY(-5px);
+        }
+
+        .about-icon {
+            width: 46px; height: 46px;
+            border-radius: 13px;
+            background: linear-gradient(135deg, rgba(108,99,255,0.2), rgba(168,85,247,0.15));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.35rem;
+            margin-bottom: 18px;
+        }
+
+        .about-card h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .about-card p {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            line-height: 1.75;
+        }
+
+        /* SOLUTIONS */
+        .solutions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .sol-card {
+            padding: 36px;
+            border-radius: 20px;
+            border: 1px solid var(--card-border);
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.3s, transform 0.3s;
+        }
+
+        .sol-card::after {
+            content: '';
+            position: absolute;
+            top: -60px; right: -60px;
+            width: 220px; height: 220px;
+            border-radius: 50%;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .sol-card:nth-child(1)::after { background: radial-gradient(circle, rgba(108,99,255,0.1), transparent 70%); }
+        .sol-card:nth-child(2)::after { background: radial-gradient(circle, rgba(236,72,153,0.08), transparent 70%); }
+        .sol-card:nth-child(3)::after { background: radial-gradient(circle, rgba(16,185,129,0.08), transparent 70%); }
+        .sol-card:nth-child(4)::after { background: radial-gradient(circle, rgba(245,158,11,0.08), transparent 70%); }
+
+        .sol-card:hover {
+            border-color: rgba(108,99,255,0.3);
+            transform: translateY(-6px);
+        }
+
+        .sol-num {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--accent);
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            margin-bottom: 14px;
+        }
+
+        .sol-icon {
+            width: 56px; height: 56px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+        }
+
+        .sol-card:nth-child(1) .sol-icon { background: linear-gradient(135deg, rgba(108,99,255,0.22), rgba(168,85,247,0.12)); }
+        .sol-card:nth-child(2) .sol-icon { background: linear-gradient(135deg, rgba(236,72,153,0.18), rgba(168,85,247,0.12)); }
+        .sol-card:nth-child(3) .sol-icon { background: linear-gradient(135deg, rgba(16,185,129,0.18), rgba(108,99,255,0.12)); }
+        .sol-card:nth-child(4) .sol-icon { background: linear-gradient(135deg, rgba(245,158,11,0.18), rgba(236,72,153,0.1)); }
+
+        .sol-card h3 {
+            font-size: 1.2rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+
+        .sol-card p {
+            color: var(--text-muted);
+            font-size: 0.92rem;
+            line-height: 1.75;
+        }
+
+        .sol-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 22px;
+        }
+
+        .sol-tag {
+            padding: 4px 13px;
+            border-radius: 100px;
+            border: 1px solid var(--card-border);
+            font-size: 0.76rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* CONTACT */
+        #contact .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        #contact .sec-desc { margin-left: auto; margin-right: auto; }
+
+        .contact-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            width: 100%;
+            max-width: 640px;
+            margin-bottom: 28px;
+        }
+
+        .contact-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            padding: 28px 20px;
+            border-radius: 18px;
+            border: 1px solid var(--card-border);
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            text-decoration: none;
+            color: var(--text);
+            transition: border-color 0.3s, transform 0.3s;
+        }
+        .contact-card:hover {
+            border-color: rgba(108,99,255,0.35);
+            transform: translateY(-4px);
+        }
+
+        .c-icon {
+            width: 52px; height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+        }
+
+        .c-email .c-icon { background: linear-gradient(135deg, rgba(108,99,255,0.22), rgba(168,85,247,0.15)); }
+        .c-phone .c-icon { background: linear-gradient(135deg, rgba(37,211,102,0.18), rgba(16,185,129,0.12)); }
+
+        .c-label {
+            font-size: 0.76rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .c-value {
+            font-size: 0.97rem;
+            font-weight: 700;
+            direction: ltr;
+        }
+
+        .btn-wa-lg {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 40px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #25d366, #20b858);
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.05rem;
+            box-shadow: 0 4px 24px rgba(37,211,102,0.25);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-wa-lg:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 36px rgba(37,211,102,0.4);
+        }
+
+        /* FOOTER */
+        footer {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 36px 48px;
+            border-top: 1px solid var(--card-border);
+            color: var(--text-muted);
+            font-size: 0.82rem;
+        }
+
+        /* FADE IN */
+        .reveal {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity 0.75s ease, transform 0.75s ease;
+        }
+        .reveal.in-view {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            nav { padding: 16px 20px; }
+            .nav-links { display: none; }
+            .container { padding: 0 20px; }
+            section { padding: 80px 0; }
+            .hero { padding-top: 110px; }
+            .about-grid,
+            .solutions-grid,
+            .contact-row { grid-template-columns: 1fr; }
+            .hero-actions { flex-direction: column; }
+            .btn { justify-content: center; }
+            .scroll-cue { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="blob blob-3"></div>
+
+<!-- NAV -->
+<nav>
+    <div class="nav-logo">SZL</div>
+    <ul class="nav-links">
+        <li><a href="#about">אודות</a></li>
+        <li><a href="#solutions">פתרונות</a></li>
+        <li><a href="#contact">יצירת קשר</a></li>
+    </ul>
+</nav>
+
+<!-- HERO -->
+<section style="position:relative; z-index:1;">
+    <div class="container hero">
+        <div class="hero-badge">
+            <div class="hero-badge-dot"></div>
+            זמין לפרויקטים חדשים
+        </div>
+        <h1>
+            <span class="name">שלמה זלמן לרנר</span><br>
+            <span class="role">מפתח פתרונות טכנולוגיים</span>
+        </h1>
+        <p class="hero-desc">
+            בניית מערכות חכמות ומותאמות אישית לעסקים — מהרעיון הראשוני ועד מוצר גמור שעובד.
+        </p>
+        <div class="hero-actions">
+            <a href="https://wa.me/972583639333" class="btn btn-wa" target="_blank" rel="noopener">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.558 4.115 1.535 5.845L0 24l6.335-1.652A11.954 11.954 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.791 9.791 0 01-5.007-1.374l-.36-.214-3.732.977.994-3.634-.235-.373A9.778 9.778 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182c5.43 0 9.818 4.388 9.818 9.818 0 5.43-4.388 9.818-9.818 9.818z"/></svg>
+                שלח הודעה בוואטסאפ
+            </a>
+            <a href="#contact" class="btn btn-outline">
+                פרטי יצירת קשר
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 5l-7 7 7 7"/></svg>
+            </a>
+        </div>
+
+        <div class="scroll-cue">
+            <span>גלול</span>
+            <div class="scroll-line"></div>
+        </div>
+    </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ABOUT -->
+<section id="about">
+    <div class="container reveal">
+        <div class="sec-label">אודות</div>
+        <h2 class="sec-title">מי אני?</h2>
+        <p class="sec-desc">
+            מפתח עם ניסיון בבניית מערכות מותאמות לצרכי עסקים — מהתכנון הראשוני, דרך הפיתוח, ועד להשקה ותמיכה שוטפת.
+        </p>
+
+        <div class="about-grid">
+            <div class="about-card">
+                <div class="about-icon">🏗️</div>
+                <h3>פיתוח מלא — מקצה לקצה</h3>
+                <p>בניית מערכות שלמות: ממשק משתמש, שרת, מסד נתונים — הכל תחת קורת גג אחת וללא תלות בצדדים שלישיים.</p>
+            </div>
+            <div class="about-card">
+                <div class="about-icon">⚡</div>
+                <h3>פתרונות מותאמים אישית</h3>
+                <p>כל פרויקט נבנה בהתאם לדרישות הספציפיות — לא תבניות גנריות, אלא מערכת שמתאימה בדיוק לתהליך העבודה שלך.</p>
+            </div>
+            <div class="about-card">
+                <div class="about-icon">🎯</div>
+                <h3>חשיבה עסקית</h3>
+                <p>הטכנולוגיה היא אמצעי — המטרה היא לפתור בעיות אמיתיות, לחסוך זמן ולייצר ערך מדיד לעסק.</p>
+            </div>
+            <div class="about-card">
+                <div class="about-icon">🔧</div>
+                <h3>תמיכה ותחזוקה שוטפת</h3>
+                <p>לא נעלם אחרי ההשקה — מלווה את הפרויקטים לאורך זמן עם עדכונים, שיפורים ומענה מהיר לכל צורך.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- SOLUTIONS -->
+<section id="solutions">
+    <div class="container reveal">
+        <div class="sec-label">פתרונות</div>
+        <h2 class="sec-title">מה אני בונה?</h2>
+        <p class="sec-desc">
+            מערכות שמנהלות תהליכים עסקיים, חוסכות זמן ומייעלות עבודה יומיומית לארגונים ועסקים.
+        </p>
+
+        <div class="solutions-grid">
+
+            <div class="sol-card">
+                <div class="sol-num">01</div>
+                <div class="sol-icon">🤝</div>
+                <h3>מערכת CRM</h3>
+                <p>ניהול לקוחות, מעקב אחר פניות ולידים, ותיעוד תהליכי מכירה — הכל במקום אחד. המערכת בנויה בהתאמה מלאה לתהליכי הארגון.</p>
+                <div class="sol-tags">
+                    <span class="sol-tag">ניהול לקוחות</span>
+                    <span class="sol-tag">מעקב לידים</span>
+                    <span class="sol-tag">דשבורד נתונים</span>
+                </div>
+            </div>
+
+            <div class="sol-card">
+                <div class="sol-num">02</div>
+                <div class="sol-icon">🎫</div>
+                <h3>מערכת ליצירת שוברים</h3>
+                <p>יצירה, ניהול ומעקב אחר שוברי הנחה ומתנה — אוטומטית, מהירה וגמישה. מותאמת לכל סוג עסק עם דוחות ובקרה מלאה.</p>
+                <div class="sol-tags">
+                    <span class="sol-tag">שוברים דיגיטליים</span>
+                    <span class="sol-tag">ניהול מלאי</span>
+                    <span class="sol-tag">דוחות</span>
+                </div>
+            </div>
+
+            <div class="sol-card">
+                <div class="sol-num">03</div>
+                <div class="sol-icon">📊</div>
+                <h3>מערכות ניהול צי</h3>
+                <p>מעקב אחר רכבים, תחזוקות, נהגים ואירועים בזמן אמת — פתרון מקיף לארגונים עם צי רכב בכל גודל.</p>
+                <div class="sol-tags">
+                    <span class="sol-tag">ניהול רכבים</span>
+                    <span class="sol-tag">תחזוקות</span>
+                    <span class="sol-tag">דוחות תפעוליים</span>
+                </div>
+            </div>
+
+            <div class="sol-card">
+                <div class="sol-num">04</div>
+                <div class="sol-icon">🛠️</div>
+                <h3>פתרון מותאם אישית</h3>
+                <p>יש לך אתגר עסקי ייחודי? נשב יחד, נבין את הצורך ונבנה בדיוק את הפתרון הנכון — מהרעיון ועד המוצר הגמור.</p>
+                <div class="sol-tags">
+                    <span class="sol-tag">פיתוח מותאם</span>
+                    <span class="sol-tag">ייעוץ טכנולוגי</span>
+                    <span class="sol-tag">אינטגרציות</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- CONTACT -->
+<section id="contact">
+    <div class="container reveal">
+        <div class="sec-label">יצירת קשר</div>
+        <h2 class="sec-title">בואו נדבר</h2>
+        <p class="sec-desc">
+            רוצה לשמוע עוד על פתרון מסוים, או שיש לך רעיון לפרויקט? אשמח לשיחה קצרה.
+        </p>
+
+        <div class="contact-row">
+            <a href="mailto:B0583639333@gmail.com" class="contact-card c-email">
+                <div class="c-icon">✉️</div>
+                <div class="c-label">אימייל</div>
+                <div class="c-value">B0583639333@gmail.com</div>
+            </a>
+            <a href="tel:0583639333" class="contact-card c-phone">
+                <div class="c-icon">📞</div>
+                <div class="c-label">טלפון</div>
+                <div class="c-value">058-363-9333</div>
+            </a>
+        </div>
+
+        <a href="https://wa.me/972583639333" class="btn-wa-lg" target="_blank" rel="noopener">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.558 4.115 1.535 5.845L0 24l6.335-1.652A11.954 11.954 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.791 9.791 0 01-5.007-1.374l-.36-.214-3.732.977.994-3.634-.235-.373A9.778 9.778 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182c5.43 0 9.818 4.388 9.818 9.818 0 5.43-4.388 9.818-9.818 9.818z"/></svg>
+            שלח הודעה בוואטסאפ
+        </a>
+    </div>
+</section>
+
+<footer>
+    <p>© 2026 שלמה זלמן לרנר &nbsp;·&nbsp; כל הזכויות שמורות</p>
+</footer>
+
+<script>
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+            if (e.isIntersecting) {
+                e.target.classList.add('in-view');
+                observer.unobserve(e.target);
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
