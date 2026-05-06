@@ -531,73 +531,114 @@
 
         /* RESPONSIVE */
         @media (max-width: 768px) {
-            nav { padding: 14px 20px; }
+            nav {
+                padding: 12px 18px;
+                min-height: 58px;
+            }
             .nav-links { display: none; }
-            .container { padding: 0 20px; }
-            section { padding: 34px 0; }
+            .container { padding: 0 18px; }
+            section { padding: 24px 0; }
+            .section-divider { display: none; }
             .hero {
                 min-height: auto;
-                padding-top: 118px;
-                padding-bottom: 34px;
+                padding-top: 86px;
+                padding-bottom: 22px;
                 justify-content: flex-start;
             }
             .hero-badge {
-                margin-bottom: 14px;
-                font-size: 0.78rem;
+                margin-bottom: 12px;
+                padding: 5px 12px;
+                font-size: 0.76rem;
             }
             .hero h1 {
-                font-size: 2.45rem;
-                line-height: 1.14;
+                font-size: 2.15rem;
+                line-height: 1.12;
                 letter-spacing: 0;
             }
             .hero-desc {
-                font-size: 1rem;
-                margin: 16px 0 24px;
-                line-height: 1.7;
+                font-size: 0.95rem;
+                margin: 12px 0 18px;
+                line-height: 1.58;
             }
             .about-grid,
             .solutions-grid,
             .contact-row {
                 grid-template-columns: 1fr;
-                gap: 14px;
+                gap: 12px;
             }
             .hero-actions {
                 flex-direction: column;
-                gap: 12px;
+                gap: 10px;
             }
             .btn {
                 width: 100%;
                 justify-content: center;
-                padding: 14px 18px;
+                padding: 12px 16px;
+                min-height: 50px;
             }
             .sec-label {
-                margin-bottom: 6px;
+                margin-bottom: 4px;
                 letter-spacing: 2px;
             }
             .sec-title {
-                font-size: 2rem;
-                line-height: 1.2;
+                font-size: 1.75rem;
+                line-height: 1.16;
+                margin-bottom: 8px;
             }
             .sec-desc {
-                margin-bottom: 20px;
-                line-height: 1.7;
+                margin-bottom: 16px;
+                font-size: 0.92rem;
+                line-height: 1.55;
             }
             .about-card,
             .sol-card {
-                padding: 20px;
-                border-radius: 16px;
+                padding: 16px;
+                border-radius: 14px;
+                min-height: 0;
+            }
+            .sol-card::after { display: none; }
+            .about-card:hover,
+            .sol-card:hover,
+            .contact-card:hover {
+                transform: none;
+            }
+            .about-icon {
+                width: 34px;
+                height: 34px;
+                margin-bottom: 10px;
+                font-size: 1rem;
+            }
+            .about-card h3,
+            .sol-card h3 {
+                font-size: 0.98rem;
+                margin-bottom: 6px;
+            }
+            .about-card p,
+            .sol-card p {
+                font-size: 0.83rem;
+                line-height: 1.48;
             }
             .sol-icon {
-                width: 40px;
-                height: 40px;
-                margin-bottom: 12px;
+                width: 36px;
+                height: 36px;
+                margin-bottom: 10px;
+                font-size: 1.1rem;
             }
-            .sol-tags { margin-top: 14px; }
-            .contact-card { padding: 18px 14px; }
+            .sol-num { margin-bottom: 8px; }
+            .sol-tags {
+                gap: 6px;
+                margin-top: 12px;
+            }
+            .sol-tag {
+                padding: 3px 10px;
+                font-size: 0.72rem;
+            }
+            .contact-card { padding: 16px 14px; }
             .btn-wa-lg {
                 width: 100%;
                 justify-content: center;
-                padding: 15px 18px;
+                padding: 14px 18px;
+                min-height: 52px;
             }
             .reveal,
             .stagger > * {
@@ -606,10 +647,8 @@
                 transition: none;
             }
             .scroll-cue { display: none; }
-            .blob {
-                opacity: 0.55;
-                filter: blur(70px);
-            }
+            .blob { display: none; }
+            footer { padding: 18px; }
         }
     </style>
 </head>
