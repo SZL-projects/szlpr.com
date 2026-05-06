@@ -117,11 +117,11 @@
             padding: 0 48px;
         }
 
-        section { padding: 60px 0; }
+        section { padding: 48px 0; }
 
         /* HERO */
         .hero {
-            min-height: 100vh;
+            min-height: min(100vh, 760px);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -531,17 +531,85 @@
 
         /* RESPONSIVE */
         @media (max-width: 768px) {
-            nav { padding: 16px 20px; }
+            nav { padding: 14px 20px; }
             .nav-links { display: none; }
             .container { padding: 0 20px; }
-            section { padding: 50px 0; }
-            .hero { padding-top: 110px; }
+            section { padding: 34px 0; }
+            .hero {
+                min-height: auto;
+                padding-top: 118px;
+                padding-bottom: 34px;
+                justify-content: flex-start;
+            }
+            .hero-badge {
+                margin-bottom: 14px;
+                font-size: 0.78rem;
+            }
+            .hero h1 {
+                font-size: 2.45rem;
+                line-height: 1.14;
+                letter-spacing: 0;
+            }
+            .hero-desc {
+                font-size: 1rem;
+                margin: 16px 0 24px;
+                line-height: 1.7;
+            }
             .about-grid,
             .solutions-grid,
-            .contact-row { grid-template-columns: 1fr; }
-            .hero-actions { flex-direction: column; }
-            .btn { justify-content: center; }
+            .contact-row {
+                grid-template-columns: 1fr;
+                gap: 14px;
+            }
+            .hero-actions {
+                flex-direction: column;
+                gap: 12px;
+            }
+            .btn {
+                width: 100%;
+                justify-content: center;
+                padding: 14px 18px;
+            }
+            .sec-label {
+                margin-bottom: 6px;
+                letter-spacing: 2px;
+            }
+            .sec-title {
+                font-size: 2rem;
+                line-height: 1.2;
+            }
+            .sec-desc {
+                margin-bottom: 20px;
+                line-height: 1.7;
+            }
+            .about-card,
+            .sol-card {
+                padding: 20px;
+                border-radius: 16px;
+            }
+            .sol-icon {
+                width: 40px;
+                height: 40px;
+                margin-bottom: 12px;
+            }
+            .sol-tags { margin-top: 14px; }
+            .contact-card { padding: 18px 14px; }
+            .btn-wa-lg {
+                width: 100%;
+                justify-content: center;
+                padding: 15px 18px;
+            }
+            .reveal,
+            .stagger > * {
+                opacity: 1;
+                transform: none;
+                transition: none;
+            }
             .scroll-cue { display: none; }
+            .blob {
+                opacity: 0.55;
+                filter: blur(70px);
+            }
         }
     </style>
 </head>
