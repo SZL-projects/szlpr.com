@@ -1,1005 +1,341 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>שלמה זלמן לרנר — פתרונות טכנולוגיים</title>
-    <meta name="description" content="מפתח פתרונות טכנולוגיים מותאמים אישית — מערכות CRM, שוברים, ניהול צי ועוד.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>שלמה זלמן לרנר — מפתח פתרונות טכנולוגיים</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
-        :root {
-            --bg:           #07071100;
-            --bg-solid:     #070711;
-            --accent:       #6c63ff;
-            --accent2:      #a855f7;
-            --accent3:      #ec4899;
-            --text:         #e8e8f0;
-            --text-muted:   #8888aa;
-            --card-bg:      rgba(255,255,255,0.04);
-            --card-border:  rgba(255,255,255,0.08);
-        }
+:root{
+  --bg:#0d0d1a;
+  --card:#11111e;
+  --border:rgba(255,255,255,.07);
+  --fg:#e0e0f0;
+  --dim:#5a5a7a;
+}
 
-        html { scroll-behavior: smooth; }
+html{scroll-behavior:smooth}
+body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--fg);overflow-x:hidden}
 
-        body {
-            font-family: 'Heebo', sans-serif;
-            background: var(--bg-solid);
-            color: var(--text);
-            line-height: 1.55;
-            overflow-x: hidden;
-        }
+body::before{
+  content:'';position:fixed;top:-20%;right:-15%;
+  width:60vw;height:60vw;border-radius:50%;
+  background:radial-gradient(circle,rgba(120,40,200,.13) 0%,transparent 65%);
+  pointer-events:none;z-index:0;
+}
 
-        /* progress bar */
-        #progress-bar {
-            position: fixed;
-            top: 0; left: 0;
-            height: 2px;
-            width: 0%;
-            background: linear-gradient(to right, var(--accent), var(--accent2), var(--accent3));
-            z-index: 200;
-            transition: width 0.1s linear;
-        }
+/* NAV */
+nav{
+  position:fixed;top:0;width:100%;z-index:100;height:56px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 40px;
+  background:rgba(13,13,26,.8);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+}
+.logo{font-size:.68rem;font-weight:900;letter-spacing:5px;color:rgba(255,255,255,.2);text-transform:uppercase}
+nav ul{list-style:none;display:flex;gap:24px}
+nav a{font-size:.76rem;color:var(--dim);text-decoration:none;transition:color .2s}
+nav a:hover{color:var(--fg)}
 
-        /* ambient blobs */
-        .blob {
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(80px);
-            pointer-events: none;
-            z-index: 0;
-        }
-        .blob-1 {
-            width: 700px; height: 700px;
-            top: -250px; right: -250px;
-            background: radial-gradient(circle, rgba(108,99,255,0.14) 0%, transparent 65%);
-        }
-        .blob-2 {
-            width: 600px; height: 600px;
-            bottom: -200px; left: -200px;
-            background: radial-gradient(circle, rgba(168,85,247,0.1) 0%, transparent 65%);
-        }
-        .blob-3 {
-            width: 400px; height: 400px;
-            top: 40%; left: 35%;
-            background: radial-gradient(circle, rgba(236,72,153,0.06) 0%, transparent 65%);
-        }
+/* WRAP */
+.w{max-width:920px;margin:0 auto;padding:0 40px;position:relative;z-index:1}
 
-        /* NAV */
-        nav {
-            position: fixed;
-            top: 0; width: 100%;
-            z-index: 100;
-            padding: 18px 48px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            background: rgba(7,7,17,0.75);
-            border-bottom: 1px solid var(--card-border);
-        }
+/* HERO ANIMATIONS */
+@keyframes up{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 
-        .nav-logo {
-            font-size: 1.1rem;
-            font-weight: 800;
-            letter-spacing: 2px;
-            background: linear-gradient(135deg, var(--accent), var(--accent2));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
+.hero{padding:88px 0 56px}
+.hero-name{
+  font-size:clamp(2.4rem,5.5vw,5rem);font-weight:900;
+  line-height:.92;letter-spacing:-2px;color:#fff;
+  margin-bottom:6px;
+  animation:up .65s cubic-bezier(.16,1,.3,1) .05s both;
+}
+.hero-role{
+  font-size:clamp(2rem,4.5vw,4.2rem);font-weight:900;
+  line-height:.92;letter-spacing:-1.5px;
+  background:linear-gradient(120deg,#a855f7,#ec4899,#a855f7);
+  background-size:200%;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:shift 5s linear infinite, up .65s cubic-bezier(.16,1,.3,1) .18s both;
+  margin-bottom:22px;
+}
+@keyframes shift{0%{background-position:0%}100%{background-position:200%}}
 
-        .nav-links {
-            display: flex;
-            gap: 36px;
-            list-style: none;
-        }
+.hero-desc{
+  font-size:.88rem;color:var(--dim);line-height:1.75;
+  max-width:380px;margin-bottom:28px;
+  animation:up .65s cubic-bezier(.16,1,.3,1) .3s both;
+}
+.hero-btns{
+  display:flex;gap:10px;flex-wrap:wrap;align-items:center;
+  animation:up .65s cubic-bezier(.16,1,.3,1) .42s both;
+}
 
-        .nav-links a {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 500;
-            transition: color 0.25s;
-        }
-        .nav-links a:hover { color: var(--text); }
+.btn-wa{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:10px 20px;border-radius:8px;
+  background:#16a34a;color:#fff;
+  font-size:.8rem;font-weight:700;
+  text-decoration:none;white-space:nowrap;
+  transition:filter .2s,transform .2s;
+  box-shadow:0 0 20px rgba(22,163,74,.28);
+}
+.btn-wa:hover{filter:brightness(1.1);transform:translateY(-2px)}
 
-        /* LAYOUT */
-        .container {
-            position: relative;
-            z-index: 1;
-            max-width: 1120px;
-            margin: 0 auto;
-            padding: 0 48px;
-        }
+.btn-q{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:10px 18px;border-radius:8px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.04);
+  color:rgba(255,255,255,.38);
+  font-size:.8rem;font-weight:500;
+  text-decoration:none;white-space:nowrap;
+  transition:all .2s;
+}
+.btn-q:hover{border-color:rgba(255,255,255,.15);color:var(--fg);background:rgba(255,255,255,.06)}
 
-        section { padding: 48px 0; }
+/* SEP */
+.sep{height:1px;background:linear-gradient(90deg,transparent,var(--border) 30%,var(--border) 70%,transparent);position:relative;z-index:1}
 
-        /* HERO */
-        .hero {
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            padding-top: 72px;
-            padding-bottom: 16px;
-        }
+/* SECTION */
+section{padding:60px 0;position:relative;z-index:1}
 
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 5px 14px;
-            border-radius: 100px;
-            border: 1px solid rgba(108,99,255,0.35);
-            background: rgba(108,99,255,0.08);
-            color: #b0a8ff;
-            font-size: 0.82rem;
-            font-weight: 500;
-            margin-bottom: 18px;
-            width: fit-content;
-        }
+.s-label{font-size:.6rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(168,85,247,.6);margin-bottom:12px}
+.s-title{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:900;letter-spacing:-1px;color:#fff;margin-bottom:10px;line-height:1.05}
+.s-desc{font-size:.84rem;color:var(--dim);line-height:1.75;max-width:420px;margin-bottom:36px}
 
-        .hero-badge-dot {
-            width: 6px; height: 6px;
-            border-radius: 50%;
-            background: var(--accent);
-            box-shadow: 0 0 8px var(--accent);
-            animation: pulse 2s ease-in-out infinite;
-        }
+/* ABOUT */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--border);border-radius:12px;overflow:hidden}
+.gc{padding:24px 22px;background:var(--card);transition:background .25s}
+.gc:hover{background:rgba(120,40,200,.07)}
+.gc-i{
+  width:34px;height:34px;border-radius:8px;
+  border:1px solid rgba(168,85,247,.15);background:rgba(120,40,200,.1);
+  display:flex;align-items:center;justify-content:center;
+  color:#a855f7;margin-bottom:12px;
+}
+.gc h3{font-size:.85rem;font-weight:700;color:#fff;margin-bottom:6px}
+.gc p{font-size:.76rem;color:var(--dim);line-height:1.7}
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.6; transform: scale(0.85); }
-        }
+/* SOLUTIONS */
+.sol-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sol{
+  padding:22px;border-radius:11px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.015);
+  position:relative;overflow:hidden;
+  transition:border-color .3s,transform .3s;cursor:default;
+}
+.sol::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity .3s;background:radial-gradient(ellipse at 10% 10%,rgba(120,40,200,.1),transparent 55%)}
+.sol:hover{border-color:rgba(168,85,247,.28);transform:translateY(-3px)}
+.sol:hover::before{opacity:1}
+.sol-i{
+  width:34px;height:34px;border-radius:8px;
+  border:1px solid rgba(168,85,247,.15);background:rgba(120,40,200,.1);
+  display:flex;align-items:center;justify-content:center;
+  color:#a855f7;margin-bottom:14px;position:relative;z-index:1;
+}
+.sol h3{font-size:.85rem;font-weight:700;color:#fff;margin-bottom:6px;position:relative;z-index:1}
+.sol p{font-size:.75rem;color:var(--dim);line-height:1.65;margin-bottom:12px;position:relative;z-index:1}
+.chips{display:flex;flex-wrap:wrap;gap:4px;position:relative;z-index:1}
+.chip{padding:2px 8px;border-radius:100px;background:rgba(120,40,200,.1);border:1px solid rgba(168,85,247,.15);font-size:.63rem;color:#c084fc;font-weight:600}
 
-        .hero h1 {
-            font-size: clamp(2.4rem, 5vw, 4.8rem);
-            font-weight: 900;
-            line-height: 1.08;
-            letter-spacing: -1.5px;
-            margin-bottom: 8px;
-        }
+/* CONTACT */
+.contact-box{max-width:480px;margin:0 auto;text-align:center}
+.contact-box .s-desc{margin:0 auto 36px}
+.c2{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--border);border-radius:11px;overflow:hidden;margin-bottom:10px}
+.cc{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  padding:22px 16px;background:rgba(255,255,255,.02);
+  text-decoration:none;color:var(--fg);
+  border-left:1px solid var(--border);
+  transition:background .2s;
+}
+.cc:first-child{border-left:none}
+.cc:hover{background:rgba(120,40,200,.07)}
+.cc-i{width:34px;height:34px;border-radius:8px;border:1px solid rgba(168,85,247,.15);background:rgba(120,40,200,.1);display:flex;align-items:center;justify-content:center;color:#a855f7;margin-bottom:3px}
+.cc-l{font-size:.56rem;color:var(--dim);font-weight:700;letter-spacing:2px;text-transform:uppercase}
+.cc-v{font-size:.76rem;font-weight:700;direction:ltr}
+.wa-btn{
+  display:flex;align-items:center;justify-content:center;gap:9px;
+  width:100%;padding:12px;border-radius:9px;
+  background:linear-gradient(135deg,#16a34a,#15803d);
+  color:#fff;font-size:.83rem;font-weight:700;
+  text-decoration:none;transition:filter .2s,transform .2s;
+  box-shadow:0 4px 24px rgba(22,163,74,.22);
+}
+.wa-btn:hover{filter:brightness(1.08);transform:translateY(-2px)}
 
-        .hero h1 .name { color: var(--text); }
+/* FOOTER */
+footer{text-align:center;padding:22px;font-size:.68rem;color:rgba(255,255,255,.1);border-top:1px solid var(--border);position:relative;z-index:1}
 
-        .hero h1 .role {
-            background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 50%, var(--accent3) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
+/* SCROLL REVEAL */
+@keyframes fadeUp  {from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+@keyframes fadeR   {from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:none}}
+@keyframes fadeL   {from{opacity:0;transform:translateX(-28px)}to{opacity:1;transform:none}}
+@keyframes fadeScale{from{opacity:0;transform:scale(.93)}to{opacity:1;transform:none}}
 
-        .hero-desc {
-            font-size: 1rem;
-            color: var(--text-muted);
-            max-width: 500px;
-            margin: 12px 0 28px;
-            font-weight: 300;
-            line-height: 1.6;
-        }
+.anim{opacity:0}
+.anim.play            {animation:fadeUp   .7s cubic-bezier(.16,1,.3,1) both}
+.anim.play.from-r     {animation:fadeR    .7s cubic-bezier(.16,1,.3,1) both}
+.anim.play.from-l     {animation:fadeL    .7s cubic-bezier(.16,1,.3,1) both}
+.anim.play.scale-in   {animation:fadeScale .65s cubic-bezier(.16,1,.3,1) both}
+.anim.play.d1{animation-delay:.1s}
+.anim.play.d2{animation-delay:.2s}
+.anim.play.d3{animation-delay:.3s}
+.anim.play.d4{animation-delay:.4s}
 
-        .hero-actions {
-            display: flex;
-            gap: 14px;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 14px 28px;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            text-decoration: none;
-            transition: transform 0.2s, box-shadow 0.2s;
-            cursor: pointer;
-            border: none;
-        }
-
-        .btn-wa {
-            background: linear-gradient(135deg, #25d366, #20b858);
-            color: white;
-            box-shadow: 0 4px 20px rgba(37,211,102,0.28);
-        }
-        .btn-wa:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(37,211,102,0.42);
-        }
-
-        .btn-outline {
-            border: 1px solid var(--card-border);
-            background: var(--card-bg);
-            color: var(--text);
-            backdrop-filter: blur(10px);
-        }
-        .btn-outline:hover {
-            transform: translateY(-2px);
-            border-color: rgba(108,99,255,0.4);
-        }
-
-        .scroll-cue {
-            position: absolute;
-            bottom: 44px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            color: var(--text-muted);
-            font-size: 0.72rem;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        .scroll-line {
-            width: 1px; height: 44px;
-            background: linear-gradient(to bottom, rgba(108,99,255,0.7), transparent);
-            animation: scrollLine 2s ease-in-out infinite;
-        }
-        @keyframes scrollLine {
-            0%, 100% { opacity: 0.3; transform: scaleY(0.6); }
-            50% { opacity: 1; transform: scaleY(1); }
-        }
-
-        /* DIVIDER */
-        .section-divider {
-            position: relative;
-            z-index: 1;
-            height: 1px;
-            max-width: 1120px;
-            margin: 0 auto;
-            background: linear-gradient(to left, transparent, var(--card-border), transparent);
-        }
-
-        /* SECTION HEADER */
-        .sec-label {
-            font-size: 0.72rem;
-            font-weight: 700;
-            color: var(--accent);
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            margin-bottom: 8px;
-        }
-
-        .sec-title {
-            font-size: clamp(1.6rem, 2.8vw, 2.4rem);
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            margin-bottom: 10px;
-        }
-
-        .sec-desc {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            max-width: 500px;
-            line-height: 1.6;
-            margin-bottom: 28px;
-            font-weight: 300;
-        }
-
-        /* ABOUT GRID */
-        .about-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-        }
-
-        .about-card {
-            padding: 22px 24px;
-            border-radius: 16px;
-            border: 1px solid var(--card-border);
-            background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            transition: border-color 0.3s, transform 0.3s;
-        }
-        .about-card:hover {
-            border-color: rgba(108,99,255,0.3);
-            transform: translateY(-5px);
-        }
-
-        .about-icon {
-            width: 38px; height: 38px;
-            border-radius: 10px;
-            background: linear-gradient(135deg, rgba(108,99,255,0.2), rgba(168,85,247,0.15));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.1rem;
-            margin-bottom: 12px;
-        }
-
-        .about-card h3 {
-            font-size: 0.95rem;
-            font-weight: 700;
-            margin-bottom: 6px;
-        }
-
-        .about-card p {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            line-height: 1.6;
-        }
-
-        /* SOLUTIONS */
-        .solutions-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-        }
-
-        .sol-card {
-            padding: 26px 28px;
-            border-radius: 18px;
-            border: 1px solid var(--card-border);
-            background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            position: relative;
-            overflow: hidden;
-            transition: border-color 0.3s, transform 0.3s;
-        }
-
-        .sol-card::after {
-            content: '';
-            position: absolute;
-            top: -60px; right: -60px;
-            width: 220px; height: 220px;
-            border-radius: 50%;
-            pointer-events: none;
-            transition: opacity 0.3s;
-        }
-
-        .sol-card:nth-child(1)::after { background: radial-gradient(circle, rgba(108,99,255,0.1), transparent 70%); }
-        .sol-card:nth-child(2)::after { background: radial-gradient(circle, rgba(236,72,153,0.08), transparent 70%); }
-        .sol-card:nth-child(3)::after { background: radial-gradient(circle, rgba(16,185,129,0.08), transparent 70%); }
-        .sol-card:nth-child(4)::after { background: radial-gradient(circle, rgba(245,158,11,0.08), transparent 70%); }
-
-        .sol-card:hover {
-            border-color: rgba(108,99,255,0.3);
-            transform: translateY(-6px);
-        }
-
-        .sol-num {
-            font-size: 0.7rem;
-            font-weight: 700;
-            color: var(--accent);
-            letter-spacing: 2.5px;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-        }
-
-        .sol-icon {
-            width: 44px; height: 44px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.3rem;
-            margin-bottom: 14px;
-        }
-
-        .sol-card:nth-child(1) .sol-icon { background: linear-gradient(135deg, rgba(108,99,255,0.22), rgba(168,85,247,0.12)); }
-        .sol-card:nth-child(2) .sol-icon { background: linear-gradient(135deg, rgba(236,72,153,0.18), rgba(168,85,247,0.12)); }
-        .sol-card:nth-child(3) .sol-icon { background: linear-gradient(135deg, rgba(16,185,129,0.18), rgba(108,99,255,0.12)); }
-        .sol-card:nth-child(4) .sol-icon { background: linear-gradient(135deg, rgba(245,158,11,0.18), rgba(236,72,153,0.1)); }
-
-        .sol-card h3 {
-            font-size: 1.1rem;
-            font-weight: 800;
-            margin-bottom: 8px;
-        }
-
-        .sol-card p {
-            color: var(--text-muted);
-            font-size: 0.88rem;
-            line-height: 1.6;
-        }
-
-        .sol-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-top: 16px;
-        }
-
-        .sol-tag {
-            padding: 4px 13px;
-            border-radius: 100px;
-            border: 1px solid var(--card-border);
-            font-size: 0.76rem;
-            color: var(--text-muted);
-            font-weight: 500;
-        }
-
-        /* CONTACT */
-        #contact .container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-        }
-
-        #contact .sec-desc { margin-left: auto; margin-right: auto; }
-
-        .contact-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            width: 100%;
-            max-width: 580px;
-            margin-bottom: 20px;
-        }
-
-        .contact-card {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            padding: 20px 16px;
-            border-radius: 18px;
-            border: 1px solid var(--card-border);
-            background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            text-decoration: none;
-            color: var(--text);
-            transition: border-color 0.3s, transform 0.3s;
-        }
-        .contact-card:hover {
-            border-color: rgba(108,99,255,0.35);
-            transform: translateY(-4px);
-        }
-
-        .c-icon {
-            width: 52px; height: 52px;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.4rem;
-        }
-
-        .c-email .c-icon { background: linear-gradient(135deg, rgba(108,99,255,0.22), rgba(168,85,247,0.15)); }
-        .c-phone .c-icon { background: linear-gradient(135deg, rgba(37,211,102,0.18), rgba(16,185,129,0.12)); }
-
-        .c-label {
-            font-size: 0.76rem;
-            color: var(--text-muted);
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-
-        .c-value {
-            font-size: 0.97rem;
-            font-weight: 700;
-            direction: ltr;
-        }
-
-        .btn-wa-lg {
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            padding: 16px 40px;
-            border-radius: 14px;
-            background: linear-gradient(135deg, #25d366, #20b858);
-            color: white;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 1.05rem;
-            box-shadow: 0 4px 24px rgba(37,211,102,0.25);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .btn-wa-lg:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 36px rgba(37,211,102,0.4);
-        }
-
-        /* FOOTER */
-        footer {
-            position: relative;
-            z-index: 1;
-            text-align: center;
-            padding: 22px 48px;
-            border-top: 1px solid var(--card-border);
-            color: var(--text-muted);
-            font-size: 0.82rem;
-        }
-
-        /* FADE IN */
-        .reveal {
-            opacity: 0;
-            transform: translateY(32px);
-            transition: opacity 0.65s cubic-bezier(0.22,1,0.36,1), transform 0.65s cubic-bezier(0.22,1,0.36,1);
-        }
-        .reveal.in-view { opacity: 1; transform: translateY(0); }
-
-        /* stagger children */
-        .stagger > * {
-            opacity: 0;
-            transform: translateY(24px);
-            transition: opacity 0.55s cubic-bezier(0.22,1,0.36,1), transform 0.55s cubic-bezier(0.22,1,0.36,1);
-        }
-        .stagger.in-view > *:nth-child(1) { opacity:1; transform:translateY(0); transition-delay: 0.05s; }
-        .stagger.in-view > *:nth-child(2) { opacity:1; transform:translateY(0); transition-delay: 0.15s; }
-        .stagger.in-view > *:nth-child(3) { opacity:1; transform:translateY(0); transition-delay: 0.25s; }
-        .stagger.in-view > *:nth-child(4) { opacity:1; transform:translateY(0); transition-delay: 0.35s; }
-
-        /* RESPONSIVE */
-        @media (max-width: 768px) {
-            nav {
-                padding: 12px 18px;
-                min-height: 58px;
-            }
-            .nav-links { display: none; }
-            .container { padding: 0 18px; }
-            section { padding: 24px 0; }
-            .section-divider { display: none; }
-            .hero {
-                min-height: auto;
-                padding-top: 86px;
-                padding-bottom: 22px;
-                justify-content: flex-start;
-            }
-            .hero-badge {
-                margin-bottom: 12px;
-                padding: 5px 12px;
-                font-size: 0.76rem;
-            }
-            .hero h1 {
-                font-size: 2.15rem;
-                line-height: 1.12;
-                letter-spacing: 0;
-            }
-            .hero-desc {
-                font-size: 0.95rem;
-                margin: 12px 0 18px;
-                line-height: 1.58;
-            }
-            .about-grid,
-            .solutions-grid,
-            .contact-row {
-                grid-template-columns: 1fr;
-                gap: 12px;
-            }
-            .hero-actions {
-                flex-direction: column;
-                gap: 10px;
-            }
-            .btn {
-                width: 100%;
-                justify-content: center;
-                padding: 12px 16px;
-                min-height: 50px;
-            }
-            .sec-label {
-                margin-bottom: 4px;
-                letter-spacing: 2px;
-            }
-            .sec-title {
-                font-size: 1.75rem;
-                line-height: 1.16;
-                margin-bottom: 8px;
-            }
-            .sec-desc {
-                margin-bottom: 16px;
-                font-size: 0.92rem;
-                line-height: 1.55;
-            }
-            .about-card,
-            .sol-card {
-                padding: 16px;
-                border-radius: 14px;
-                min-height: 0;
-            }
-            .sol-card::after { display: none; }
-            .about-card:hover,
-            .sol-card:hover,
-            .contact-card:hover {
-                transform: none;
-            }
-            .about-icon {
-                width: 34px;
-                height: 34px;
-                margin-bottom: 10px;
-                font-size: 1rem;
-            }
-            .about-card h3,
-            .sol-card h3 {
-                font-size: 0.98rem;
-                margin-bottom: 6px;
-            }
-            .about-card p,
-            .sol-card p {
-                font-size: 0.83rem;
-                line-height: 1.48;
-            }
-            .sol-icon {
-                width: 36px;
-                height: 36px;
-                margin-bottom: 10px;
-                font-size: 1.1rem;
-            }
-            .sol-num { margin-bottom: 8px; }
-            .sol-tags {
-                gap: 6px;
-                margin-top: 12px;
-            }
-            .sol-tag {
-                padding: 3px 10px;
-                font-size: 0.72rem;
-            }
-            .contact-card { padding: 16px 14px; }
-            .btn-wa-lg {
-                width: 100%;
-                justify-content: center;
-                padding: 14px 18px;
-                min-height: 52px;
-            }
-            .reveal,
-            .stagger > * {
-                opacity: 1;
-                transform: none;
-                transition: none;
-            }
-            .scroll-cue { display: none; }
-            .blob { display: none; }
-            footer { padding: 18px; }
-        }
-        /* COMPACT LAYOUT OVERRIDES */
-        section { padding: 34px 0; }
-        .hero {
-            min-height: auto;
-            padding-top: 116px;
-            padding-bottom: 36px;
-            justify-content: flex-start;
-        }
-        .section-divider { opacity: 0.55; }
-        .sec-desc { margin-bottom: 22px; }
-        .about-grid,
-        .solutions-grid { gap: 16px; }
-        .about-card,
-        .sol-card { padding: 20px 22px; }
-
-        @media (max-width: 768px) {
-            nav { min-height: 54px; padding: 10px 18px; }
-            section { padding: 16px 0 !important; }
-            .container { padding: 0 16px; }
-            .hero {
-                padding-top: 68px !important;
-                padding-bottom: 12px !important;
-            }
-            .hero-badge { margin-bottom: 8px; }
-            .hero h1 {
-                font-size: 1.95rem !important;
-                line-height: 1.08 !important;
-                margin-bottom: 6px;
-            }
-            .hero-desc {
-                margin: 8px 0 12px !important;
-                line-height: 1.45 !important;
-            }
-            .hero-actions { gap: 8px; }
-            .btn { min-height: 46px; padding: 10px 14px; }
-            .sec-title {
-                font-size: 1.55rem !important;
-                margin-bottom: 6px !important;
-            }
-            .sec-desc {
-                margin-bottom: 10px !important;
-                line-height: 1.42 !important;
-            }
-            .about-grid,
-            .solutions-grid,
-            .contact-row { gap: 8px !important; }
-            .about-card,
-            .sol-card,
-            .contact-card {
-                padding: 12px 14px !important;
-                border-radius: 12px !important;
-            }
-            .about-icon,
-            .sol-icon,
-            .c-icon {
-                width: 30px !important;
-                height: 30px !important;
-                margin-bottom: 6px !important;
-                font-size: 0.95rem !important;
-            }
-            .about-card h3,
-            .sol-card h3 { margin-bottom: 4px !important; }
-            .about-card p,
-            .sol-card p {
-                line-height: 1.35 !important;
-                font-size: 0.8rem !important;
-            }
-            .sol-num { margin-bottom: 4px !important; }
-            .sol-tags { margin-top: 8px !important; gap: 5px !important; }
-            .sol-tag { padding: 2px 8px !important; }
-            .btn-wa-lg { min-height: 48px; padding: 12px 16px; }
-        }
-        /* HARD DENSITY FIX */
-        html { scroll-padding-top: 74px; }
-        section {
-            padding-top: 18px !important;
-            padding-bottom: 18px !important;
-            min-height: 0 !important;
-        }
-        .hero {
-            min-height: 0 !important;
-            padding-top: 92px !important;
-            padding-bottom: 18px !important;
-            justify-content: flex-start !important;
-        }
-        #about,
-        #solutions,
-        #contact { scroll-margin-top: 74px; }
-        .section-divider { display: none !important; }
-        .sec-label { margin-bottom: 4px !important; }
-        .sec-title { margin-bottom: 6px !important; }
-        .sec-desc { margin-bottom: 12px !important; }
-        .about-grid,
-        .solutions-grid,
-        .contact-row { gap: 12px !important; }
-        .about-card,
-        .sol-card,
-        .contact-card { padding: 16px !important; }
-        .sol-tags { margin-top: 10px !important; }
-        #contact .sec-desc { margin-bottom: 14px !important; }
-        footer { padding: 14px 24px !important; }
-
-        @media (min-width: 769px) {
-            .hero h1 { font-size: clamp(2.5rem, 4.2vw, 4.2rem) !important; }
-            .hero-desc { margin: 10px 0 20px !important; }
-            .about-card,
-            .sol-card { padding: 18px 20px !important; }
-            .contact-card { padding: 16px !important; }
-        }
-
-        @media (max-width: 768px) {
-            html { scroll-padding-top: 58px; }
-            section {
-                padding-top: 12px !important;
-                padding-bottom: 12px !important;
-            }
-            .hero {
-                padding-top: 64px !important;
-                padding-bottom: 10px !important;
-            }
-            #about,
-            #solutions,
-            #contact { scroll-margin-top: 58px; }
-            .hero h1 { font-size: 1.75rem !important; }
-            .hero-desc { margin: 6px 0 10px !important; }
-            .sec-title { font-size: 1.42rem !important; }
-            .sec-desc { margin-bottom: 8px !important; }
-            .about-grid,
-            .solutions-grid,
-            .contact-row { gap: 6px !important; }
-            .about-card,
-            .sol-card,
-            .contact-card { padding: 10px 12px !important; }
-            .btn,
-            .btn-wa-lg { min-height: 44px !important; }
-        }
-    </style>
+/* MOBILE */
+@media(max-width:640px){
+  nav{padding:0 18px}nav ul{display:none}
+  .w{padding:0 18px}
+  .hero{padding:72px 0 40px}
+  .hero-name,.hero-role{letter-spacing:-1px}
+  .grid2,.sol-grid{grid-template-columns:1fr}
+  .c2{grid-template-columns:1fr}
+  .cc{border-left:none;border-top:1px solid var(--border)}
+  .cc:first-child{border-top:none}
+  .anim{opacity:1!important;animation:none!important}
+}
+</style>
 </head>
 <body>
 
-<div id="progress-bar"></div>
-<div class="blob blob-1"></div>
-<div class="blob blob-2"></div>
-<div class="blob blob-3"></div>
-
-<!-- NAV -->
 <nav>
-    <div class="nav-logo">SZL</div>
-    <ul class="nav-links">
-        <li><a href="#about">אודות</a></li>
-        <li><a href="#solutions">פתרונות</a></li>
-        <li><a href="#contact">יצירת קשר</a></li>
-    </ul>
+  <div class="logo">SZL</div>
+  <ul>
+    <li><a href="#about">אודות</a></li>
+    <li><a href="#solutions">פתרונות</a></li>
+  </ul>
 </nav>
 
-<!-- HERO -->
-<section style="position:relative; z-index:1; padding-top:0;">
-    <div class="container hero">
-        <div class="hero-badge">
-            <div class="hero-badge-dot"></div>
-            זמין לפרויקטים חדשים
-        </div>
-        <h1>
-            <span class="name">שלמה זלמן לרנר</span><br>
-            <span class="role">מפתח פתרונות טכנולוגיים</span>
-        </h1>
-        <p class="hero-desc">
-            בניית מערכות חכמות ומותאמות אישית לעסקים — מהרעיון הראשוני ועד מוצר גמור שעובד.
-        </p>
-        <div class="hero-actions">
-            <a href="https://wa.me/972583639333" class="btn btn-wa" target="_blank" rel="noopener">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.558 4.115 1.535 5.845L0 24l6.335-1.652A11.954 11.954 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.791 9.791 0 01-5.007-1.374l-.36-.214-3.732.977.994-3.634-.235-.373A9.778 9.778 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182c5.43 0 9.818 4.388 9.818 9.818 0 5.43-4.388 9.818-9.818 9.818z"/></svg>
-                שלח הודעה בוואטסאפ
-            </a>
-            <a href="#contact" class="btn btn-outline">
-                פרטי יצירת קשר
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 5l-7 7 7 7"/></svg>
-            </a>
-        </div>
-
-        <div class="scroll-cue">
-            <span>גלול</span>
-            <div class="scroll-line"></div>
-        </div>
+<section class="hero">
+  <div class="w">
+    <h1 class="hero-name">שלמה זלמן לרנר</h1>
+    <div class="hero-role">מפתח פתרונות טכנולוגיים</div>
+    <p class="hero-desc">בניית מערכות חכמות ומותאמות אישית לעסקים — מהרעיון הראשוני ועד מוצר גמור שעובד.</p>
+    <div class="hero-btns">
+      <a href="#solutions" class="btn-q">
+        הפתרונות שלי
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </a>
     </div>
+  </div>
 </section>
 
-<div class="section-divider"></div>
+<div class="sep"></div>
 
-<!-- ABOUT -->
 <section id="about">
-    <div class="container reveal">
-        <div class="sec-label">אודות</div>
-        <h2 class="sec-title">מי אני?</h2>
-        <p class="sec-desc">
-            מפתח עם ניסיון בבניית מערכות מותאמות לצרכי עסקים — מהתכנון הראשוני, דרך הפיתוח, ועד להשקה ותמיכה שוטפת.
-        </p>
-
-        <div class="about-grid stagger">
-            <div class="about-card">
-                <div class="about-icon">🏗️</div>
-                <h3>פיתוח מלא — מקצה לקצה</h3>
-                <p>בניית מערכות שלמות: ממשק משתמש, שרת, מסד נתונים — הכל תחת קורת גג אחת וללא תלות בצדדים שלישיים.</p>
-            </div>
-            <div class="about-card">
-                <div class="about-icon">⚡</div>
-                <h3>פתרונות מותאמים אישית</h3>
-                <p>כל פרויקט נבנה בהתאם לדרישות הספציפיות — לא תבניות גנריות, אלא מערכת שמתאימה בדיוק לתהליך העבודה שלך.</p>
-            </div>
-            <div class="about-card">
-                <div class="about-icon">🎯</div>
-                <h3>חשיבה עסקית</h3>
-                <p>הטכנולוגיה היא אמצעי — המטרה היא לפתור בעיות אמיתיות, לחסוך זמן ולייצר ערך מדיד לעסק.</p>
-            </div>
-            <div class="about-card">
-                <div class="about-icon">🔧</div>
-                <h3>תמיכה ותחזוקה שוטפת</h3>
-                <p>לא נעלם אחרי ההשקה — מלווה את הפרויקטים לאורך זמן עם עדכונים, שיפורים ומענה מהיר לכל צורך.</p>
-            </div>
-        </div>
+  <div class="w">
+    <div class="s-label anim">אודות</div>
+    <h2 class="s-title anim">מי אני?</h2>
+    <p class="s-desc anim">מפתח עם ניסיון בבניית מערכות מותאמות לצרכי עסקים — מהתכנון, דרך הפיתוח, ועד להשקה ותמיכה שוטפת.</p>
+    <div class="grid2">
+      <div class="gc anim from-r">
+        <div class="gc-i"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
+        <h3>פיתוח מלא</h3>
+        <p>ממשק, שרת ומסד נתונים — הכל תחת קורת גג אחת, ללא צדדים שלישיים.</p>
+      </div>
+      <div class="gc anim from-l d1">
+        <div class="gc-i"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
+        <h3>מותאם אישית</h3>
+        <p>כל פרויקט נבנה לפי הצרכים — לא תבניות גנריות, אלא מערכת שמתאימה בדיוק לתהליך שלך.</p>
+      </div>
+      <div class="gc anim from-r d2">
+        <div class="gc-i"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+        <h3>חשיבה עסקית</h3>
+        <p>הטכנולוגיה היא אמצעי — המטרה היא לפתור בעיות אמיתיות ולייצר ערך לעסק.</p>
+      </div>
+      <div class="gc anim from-l d3">
+        <div class="gc-i"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+        <h3>תמיכה שוטפת</h3>
+        <p>לא נעלם אחרי ההשקה — מלווה עם עדכונים ומענה מהיר לכל צורך.</p>
+      </div>
     </div>
+  </div>
 </section>
 
-<div class="section-divider"></div>
+<div class="sep"></div>
 
-<!-- SOLUTIONS -->
 <section id="solutions">
-    <div class="container reveal">
-        <div class="sec-label">פתרונות</div>
-        <h2 class="sec-title">מה אני בונה?</h2>
-        <p class="sec-desc">
-            מערכות שמנהלות תהליכים עסקיים, חוסכות זמן ומייעלות עבודה יומיומית לארגונים ועסקים.
-        </p>
-
-        <div class="solutions-grid stagger">
-
-            <div class="sol-card">
-                <div class="sol-icon">🤝</div>
-                <h3>מערכת CRM</h3>
-                <p>ניהול לקוחות, מעקב אחר פניות ולידים, ותיעוד תהליכי מכירה — הכל במקום אחד. המערכת בנויה בהתאמה מלאה לתהליכי הארגון.</p>
-                <div class="sol-tags">
-                    <span class="sol-tag">ניהול לקוחות</span>
-                    <span class="sol-tag">מעקב לידים</span>
-                    <span class="sol-tag">דשבורד נתונים</span>
-                </div>
-            </div>
-
-            <div class="sol-card">
-                <div class="sol-icon">🎫</div>
-                <h3>מערכת ליצירת שוברים</h3>
-                <p>יצירה, ניהול ומעקב אחר שוברי הנחה ומתנה — אוטומטית, מהירה וגמישה. מותאמת לכל סוג עסק עם דוחות ובקרה מלאה.</p>
-                <div class="sol-tags">
-                    <span class="sol-tag">שוברים דיגיטליים</span>
-                    <span class="sol-tag">ניהול מלאי</span>
-                    <span class="sol-tag">דוחות</span>
-                </div>
-            </div>
-
-            <div class="sol-card">
-                <div class="sol-icon">📊</div>
-                <h3>מערכות ניהול צי</h3>
-                <p>מעקב אחר רכבים, תחזוקות, נהגים ואירועים בזמן אמת — פתרון מקיף לארגונים עם צי רכב בכל גודל.</p>
-                <div class="sol-tags">
-                    <span class="sol-tag">ניהול רכבים</span>
-                    <span class="sol-tag">תחזוקות</span>
-                    <span class="sol-tag">דוחות תפעוליים</span>
-                </div>
-            </div>
-
-            <div class="sol-card">
-                <div class="sol-icon">🛠️</div>
-                <h3>פתרון מותאם אישית</h3>
-                <p>יש לך אתגר עסקי ייחודי? נשב יחד, נבין את הצורך ונבנה בדיוק את הפתרון הנכון — מהרעיון ועד המוצר הגמור.</p>
-                <div class="sol-tags">
-                    <span class="sol-tag">פיתוח מותאם</span>
-                    <span class="sol-tag">ייעוץ טכנולוגי</span>
-                    <span class="sol-tag">אינטגרציות</span>
-                </div>
-            </div>
-
-        </div>
+  <div class="w">
+    <div class="s-label anim">פתרונות</div>
+    <h2 class="s-title anim">מה אני בונה?</h2>
+    <p class="s-desc anim">מערכות שמנהלות תהליכים עסקיים וחוסכות זמן יקר.</p>
+    <div class="sol-grid">
+      <div class="sol anim scale-in">
+        <div class="sol-i"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
+        <h3>מערכת CRM</h3>
+        <p>ניהול לקוחות, לידים ותהליכי מכירה — הכל במקום אחד.</p>
+        <div class="chips"><span class="chip">לקוחות</span><span class="chip">לידים</span><span class="chip">דשבורד</span></div>
+      </div>
+      <div class="sol anim scale-in d1">
+        <div class="sol-i"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a3 3 0 010-6h20a3 3 0 010 6"/><path d="M2 9v11a2 2 0 002 2h16a2 2 0 002-2V9M12 9v13"/></svg></div>
+        <h3>מערכת שוברים</h3>
+        <p>יצירה, ניהול ומעקב אחר שוברי הנחה ומתנה — אוטומטית.</p>
+        <div class="chips"><span class="chip">שוברים</span><span class="chip">מלאי</span><span class="chip">דוחות</span></div>
+      </div>
+      <div class="sol anim scale-in d2">
+        <div class="sol-i"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h5a2 2 0 012 2v6a2 2 0 01-2 2h-1"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+        <h3>ניהול צי רכב</h3>
+        <p>מעקב רכבים, תחזוקות ונהגים בזמן אמת לארגונים.</p>
+        <div class="chips"><span class="chip">רכבים</span><span class="chip">תחזוקות</span><span class="chip">תפעול</span></div>
+      </div>
+      <div class="sol anim scale-in d3">
+        <div class="sol-i"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+        <h3>פתרון מותאם</h3>
+        <p>אתגר עסקי ייחודי? נבנה יחד את הפתרון הנכון עבורך.</p>
+        <div class="chips"><span class="chip">פיתוח</span><span class="chip">ייעוץ</span><span class="chip">אינטגרציות</span></div>
+      </div>
     </div>
+  </div>
 </section>
 
-<div class="section-divider"></div>
+<div class="sep"></div>
 
-<!-- CONTACT -->
 <section id="contact">
-    <div class="container reveal">
-        <div class="sec-label">יצירת קשר</div>
-        <h2 class="sec-title">בואו נדבר</h2>
-        <p class="sec-desc">
-            רוצה לשמוע עוד על פתרון מסוים, או שיש לך רעיון לפרויקט? אשמח לשיחה קצרה.
-        </p>
-
-        <div class="contact-row">
-            <a href="mailto:B0583639333@gmail.com" class="contact-card c-email">
-                <div class="c-icon">✉️</div>
-                <div class="c-label">אימייל</div>
-                <div class="c-value">B0583639333@gmail.com</div>
-            </a>
-            <a href="tel:0583639333" class="contact-card c-phone">
-                <div class="c-icon">📞</div>
-                <div class="c-label">טלפון</div>
-                <div class="c-value">058-363-9333</div>
-            </a>
-        </div>
-
-        <a href="https://wa.me/972583639333" class="btn-wa-lg" target="_blank" rel="noopener">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.558 4.115 1.535 5.845L0 24l6.335-1.652A11.954 11.954 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.791 9.791 0 01-5.007-1.374l-.36-.214-3.732.977.994-3.634-.235-.373A9.778 9.778 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182c5.43 0 9.818 4.388 9.818 9.818 0 5.43-4.388 9.818-9.818 9.818z"/></svg>
-            שלח הודעה בוואטסאפ
+  <div class="w">
+    <div class="contact-box">
+      <div class="s-label anim">יצירת קשר</div>
+      <h2 class="s-title anim">בואו נדבר</h2>
+      <p class="s-desc anim">רעיון לפרויקט? שאלה? אשמח לשמוע.</p>
+      <div class="c2 anim">
+        <a href="mailto:B0583639333@gmail.com" class="cc">
+          <div class="cc-i"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+          <div class="cc-l">אימייל</div>
+          <div class="cc-v">B0583639333@gmail.com</div>
         </a>
+        <a href="tel:0583639333" class="cc">
+          <div class="cc-i"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.67A2 2 0 012 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg></div>
+          <div class="cc-l">טלפון</div>
+          <div class="cc-v">058-363-9333</div>
+        </a>
+      </div>
+      <a href="https://wa.me/972583639333" class="wa-btn anim" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.558 4.115 1.535 5.845L0 24l6.335-1.652A11.954 11.954 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.791 9.791 0 01-5.007-1.374l-.36-.214-3.732.977.994-3.634-.235-.373A9.778 9.778 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182c5.43 0 9.818 4.388 9.818 9.818 0 5.43-4.388 9.818-9.818 9.818z"/></svg>
+        שלח הודעה בוואטסאפ
+      </a>
     </div>
+  </div>
 </section>
 
-<footer>
-    <p>© 2026 שלמה זלמן לרנר &nbsp;·&nbsp; כל הזכויות שמורות</p>
-</footer>
+<footer>© 2026 שלמה זלמן לרנר · כל הזכויות שמורות</footer>
 
 <script>
-    // Progress bar
-    const bar = document.getElementById('progress-bar');
-    window.addEventListener('scroll', () => {
-        const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
-        bar.style.width = pct + '%';
-    }, { passive: true });
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('play');
+      obs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0, rootMargin: '0px 0px -20px 0px' });
 
-    // Reveal + stagger on scroll
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(e => {
-            if (e.isIntersecting) {
-                e.target.classList.add('in-view');
-                observer.unobserve(e.target);
-            }
-        });
-    }, { threshold: 0.08 });
-
-    document.querySelectorAll('.reveal, .stagger').forEach(el => observer.observe(el));
-
-    // Parallax blobs
-    const b1 = document.querySelector('.blob-1');
-    const b2 = document.querySelector('.blob-2');
-    const b3 = document.querySelector('.blob-3');
-    window.addEventListener('scroll', () => {
-        const y = window.scrollY;
-        b1.style.transform = `translateY(${y * 0.18}px)`;
-        b2.style.transform = `translateY(${-y * 0.12}px)`;
-        b3.style.transform = `translateY(${y * 0.08}px)`;
-    }, { passive: true });
+document.querySelectorAll('.anim').forEach(el => obs.observe(el));
 </script>
-
 </body>
 </html>
